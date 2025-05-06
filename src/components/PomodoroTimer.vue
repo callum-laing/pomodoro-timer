@@ -5,6 +5,7 @@ const timeLeft = ref(1500);
 const intervalId = ref(null);
 const mode = ref('work');
 const isRunning = ref(false);
+const wasPaused = ref(false);
 
 const durations = {
 	work: 1500,
@@ -50,9 +51,11 @@ function toggleTimer() {
 	if (isRunning.value) {
 		stopTimer();
 		isRunning.value = false;
+		wasPaused.value = true;
 	} else {
 		startTimer();
 		isRunning.value = true;
+		wasPaused.value = false;
 	}
 }
 
@@ -105,7 +108,7 @@ const glowButtonStyle = computed(() => ({
 
 		<div class="btnContainer">
 			<button class="btnAction" @click="toggleTimer" :style="glowButtonStyle">
-				{{ isRunning ? 'Pause' : 'Start' }}
+				{{ isRunning ? 'Pause' : wasPaused ? 'Continue' : 'Start' }}
 			</button>
 			<button class="btnAction" v-if="isRunning" @click="resetTimer" :style="glowButtonStyle">
 				Reset
