@@ -52,10 +52,13 @@ function toggleTimer() {
 		stopTimer();
 		isRunning.value = false;
 		wasPaused.value = true;
-	} else {
+	} else if (wasPaused.value) {
 		startTimer();
 		isRunning.value = true;
 		wasPaused.value = false;
+	} else {
+		startTimer();
+		isRunning.value = true;
 	}
 }
 
@@ -66,8 +69,8 @@ function stopTimer() {
 function resetTimer() {
 	clearInterval(intervalId.value);
 	isRunning.value = false;
-	timeLeft.value = 1500;
-	mode.value = 'work';
+	wasPaused.value = false;
+	timeLeft.value = durations[mode.value];
 }
 
 const currentColor = computed(() => {
@@ -110,7 +113,12 @@ const glowButtonStyle = computed(() => ({
 			<button class="btnAction" @click="toggleTimer" :style="glowButtonStyle">
 				{{ isRunning ? 'Pause' : wasPaused ? 'Continue' : 'Start' }}
 			</button>
-			<button class="btnAction" v-if="isRunning" @click="resetTimer" :style="glowButtonStyle">
+			<button
+				class="btnAction"
+				v-if="isRunning || wasPaused"
+				@click="resetTimer"
+				:style="glowButtonStyle"
+			>
 				Reset
 			</button>
 		</div>
