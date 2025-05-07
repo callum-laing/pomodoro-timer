@@ -169,4 +169,76 @@ const glowButtonStyle = computed(() => ({
 .btnLong {
 	border: 2px solid #457b9d;
 }
+
+.timerBox {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	font-size: 2em;
+	padding: 1rem;
+
+	.timer {
+		font-size: 4em;
+		margin: 1rem 0;
+	}
+
+	.mode {
+		text-align: center;
+		margin-top: 1rem;
+		font-size: 1em;
+	}
+}
+
+.btnContainer {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 10px;
+
+	button {
+		border-radius: 5px;
+		padding: 10px 20px;
+		margin: 5px;
+		background-color: transparent;
+		font-weight: bold;
+		font-size: 1em;
+		min-width: 100px;
+	}
+}
+
+@media (max-width: 768px) {
+	.timerBox {
+		font-size: 1.2em;
+
+		.timer {
+			font-size: 3.5em;
+		}
+	}
+
+	.btnContainer {
+		flex-wrap: nowrap;
+		button {
+			width: 100%;
+			font-size: 0.5em;
+		}
+	}
+}
+
+@media (max-width: 380px) {
+	.timerBox {
+		font-size: 0.7em;
+
+		.timer {
+			font-size: 5em;
+		}
+	}
+
+	.btnContainer {
+		flex-wrap: nowrap;
+		button {
+			font-size: 0.8em;
+		}
+	}
+}
 </style>
