@@ -51,21 +51,22 @@ function removeTodo(todo) {
 
 <template>
 	<div class="todoBox">
-		<h2><span>Todo List</span></h2>
+		<h2>Todo List</h2>
+
 		<form @submit.prevent="addTodo" class="todoForm">
 			<input v-model="newTodo" required placeholder="Add a task..." />
-			<button class="btn btnWork">Add Todo</button>
+			<button class="btn btnAdd">Add Todo</button>
 		</form>
 
 		<ul class="todoList">
 			<li v-for="todo in filteredTodos" :key="todo.id">
 				<input type="checkbox" v-model="todo.done" />
 				<span :class="{ done: todo.done }">{{ todo.text }}</span>
-				<button class="btn btnShort" @click="removeTodo(todo)">X</button>
+				<button class="btn btnRemove" @click="removeTodo(todo)">X</button>
 			</li>
 		</ul>
 
-		<button class="btn btnLong" @click="hideCompleted = !hideCompleted">
+		<button class="btn btnHide toggleHide" @click="hideCompleted = !hideCompleted">
 			{{ hideCompleted ? 'Show all' : 'Hide completed' }}
 		</button>
 	</div>
@@ -82,17 +83,9 @@ function removeTodo(todo) {
 }
 
 h2 {
-	width: 50%;
 	text-align: center;
-	border-bottom: 1px solid rgba(250, 250, 250, 0.5);
-	line-height: 0.1em;
-	margin: 10px 0 50px;
 	font-size: 2em;
-}
-
-h2 span {
-	background: rgba(20, 20, 20);
-	padding: 0 10px;
+	margin-bottom: 1.5rem;
 }
 
 .todoForm {
@@ -101,14 +94,23 @@ h2 span {
 	justify-content: center;
 	gap: 10px;
 	margin-bottom: 1rem;
+	width: 100%;
+	max-width: 400px;
 
 	input {
 		padding: 8px;
 		font-size: 1em;
 		border: 1px solid rgba(150, 150, 150, 0.5);
 		border-radius: 5px;
-		min-width: 200px;
 		background: transparent;
+		width: 100%;
+		max-width: 300px;
+		min-width: 180px;
+	}
+
+	button {
+		width: 100%;
+		max-width: 150px;
 	}
 }
 
@@ -138,12 +140,22 @@ h2 span {
 			overflow: hidden;
 			text-overflow: ellipsis;
 		}
+
+		button {
+			margin-left: 10px;
+		}
 	}
 }
 
 .done {
 	text-decoration: line-through;
 	color: #999;
+}
+
+.toggleHide {
+	margin-top: 1rem;
+	width: 100%;
+	max-width: 200px;
 }
 
 .btn {
@@ -160,17 +172,17 @@ h2 span {
 	box-shadow: 0 0 6px var(--btn-color);
 }
 
-.btnWork {
+.btnRemove {
 	--btn-color: #e63946;
 	color: #e63946;
 }
 
-.btnShort {
+.btnAdd {
 	--btn-color: #2a9d8f;
 	color: #2a9d8f;
 }
 
-.btnLong {
+.btnHide {
 	--btn-color: #457b9d;
 	color: #457b9d;
 }
@@ -178,10 +190,11 @@ h2 span {
 @media (max-width: 480px) {
 	.todoForm {
 		flex-direction: column;
+		align-items: center;
 
-		input,
 		button {
-			width: 100%;
+			width: 30%;
+			max-width: none;
 		}
 	}
 

@@ -146,12 +146,19 @@ const glowButtonStyle = computed(() => ({
 }
 
 .btnContainer {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 10px;
+
 	button {
 		border-radius: 5px;
-		padding: 2px 10px;
-		margin: 10px;
+		padding: 10px 20px;
+		margin: 5px;
 		background-color: transparent;
 		font-weight: bold;
+		font-size: 1em;
+		max-width: 100%;
 	}
 	button:hover {
 		cursor: pointer;
@@ -182,23 +189,6 @@ const glowButtonStyle = computed(() => ({
 	text-align: center;
 	margin-top: 1rem;
 	font-size: 1em;
-}
-
-.btnContainer {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: center;
-	gap: 10px;
-
-	button {
-		border-radius: 5px;
-		padding: 10px 20px;
-		margin: 5px;
-		background-color: transparent;
-		font-weight: bold;
-		font-size: 1em;
-		min-width: 100px;
-	}
 }
 
 @media (max-width: 380px) {
