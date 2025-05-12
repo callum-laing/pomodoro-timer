@@ -96,13 +96,13 @@ const glowButtonStyle = computed(() => ({
 <template>
 	<div class="timerBox">
 		<div class="mode-buttons btnContainer">
-			<button class="btnWork" :class="{ active: mode === 'work' }" @click="setMode('work')">
+			<button class="btn btnWork" :class="{ active: mode === 'work' }" @click="setMode('work')">
 				Pomodoro
 			</button>
-			<button class="btnShort" :class="{ active: mode === 'short' }" @click="setMode('short')">
+			<button class="btn btnShort" :class="{ active: mode === 'short' }" @click="setMode('short')">
 				Short Break
 			</button>
-			<button class="btnLong" :class="{ active: mode === 'long' }" @click="setMode('long')">
+			<button class="btn btnLong" :class="{ active: mode === 'long' }" @click="setMode('long')">
 				Long Break
 			</button>
 		</div>
@@ -158,36 +158,30 @@ const glowButtonStyle = computed(() => ({
 	}
 }
 
+.btn {
+	border: 2px solid var(--btn-color);
+}
+
+.btn:hover {
+	box-shadow: 0 0 6px var(--btn-color);
+}
+
 .btnWork {
-	border: 2px solid #e63946;
+	--btn-color: #e63946;
 }
 
 .btnShort {
-	border: 2px solid #2a9d8f;
+	--btn-color: #2a9d8f;
 }
 
 .btnLong {
-	border: 2px solid #457b9d;
+	--btn-color: #457b9d;
 }
 
-.timerBox {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-direction: column;
-	font-size: 2em;
-	padding: 1rem;
-
-	.timer {
-		font-size: 4em;
-		margin: 1rem 0;
-	}
-
-	.mode {
-		text-align: center;
-		margin-top: 1rem;
-		font-size: 1em;
-	}
+.mode {
+	text-align: center;
+	margin-top: 1rem;
+	font-size: 1em;
 }
 
 .btnContainer {
