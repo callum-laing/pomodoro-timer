@@ -199,7 +199,6 @@ h2 {
 	}
 
 	.todoList li {
-		flex-direction: column;
 		align-items: flex-start;
 
 		button {
