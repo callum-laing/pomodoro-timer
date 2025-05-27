@@ -256,8 +256,10 @@ h2 {
 		align-items: flex-start;
 
 		button {
-			align-self: flex-end;
-			margin-top: 5px;
+			align-self: center;
+			font-size: 0.6em;
+			padding: 11px 5px;
+			margin-top: 0;
 		}
 	}
 }
