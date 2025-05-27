@@ -1,78 +1,42 @@
 <script setup>
 import { ref, computed } from 'vue';
 
-const timeLeft = ref(1500);
-const intervalId = ref(null);
+// Time states (in seconds)
+const durations = {
+	work: 1500, // 25 minutes
+	short: 300, // 5 minutes
+	long: 900 // 15 minutes
+};
+
+const timeLeft = ref(durations.work);
 const mode = ref('work');
 const isRunning = ref(false);
 const wasPaused = ref(false);
+const pomodoroCount = ref(0);
+const intervalId = ref(null);
 
-const durations = {
-	work: 1500,
-	short: 300,
-	long: 900
-};
-
-function setMode(newMode) {
-	stopTimer();
-	mode.value = newMode;
-	timeLeft.value = durations[newMode];
-	isRunning.value = false;
-}
-
+// Compute time as MM:SS string
 const timer = computed(() => {
 	const minutes = Math.floor(timeLeft.value / 60);
 	const seconds = timeLeft.value % 60;
 	return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 });
 
+// Label based on current mode
 const modeLabel = computed(() => {
-	if (mode.value === 'work') return 'Time to focus!';
-	if (mode.value === 'short') return 'Quick break time!';
-	return 'Take a long break!';
+	switch (mode.value) {
+		case 'work':
+			return 'Time to focus!';
+		case 'short':
+			return 'Quick break time!';
+		case 'long':
+			return 'Take a long break!';
+		default:
+			return '';
+	}
 });
 
-function startTimer() {
-	intervalId.value = setInterval(() => {
-		if (timeLeft.value > 0) {
-			timeLeft.value--;
-		} else {
-			if (mode.value === 'work') {
-				mode.value = 'break';
-				timeLeft.value = 300;
-			} else {
-				stopTimer();
-			}
-		}
-	}, 1000);
-}
-
-function toggleTimer() {
-	if (isRunning.value) {
-		stopTimer();
-		isRunning.value = false;
-		wasPaused.value = true;
-	} else if (wasPaused.value) {
-		startTimer();
-		isRunning.value = true;
-		wasPaused.value = false;
-	} else {
-		startTimer();
-		isRunning.value = true;
-	}
-}
-
-function stopTimer() {
-	clearInterval(intervalId.value);
-}
-
-function resetTimer() {
-	clearInterval(intervalId.value);
-	isRunning.value = false;
-	wasPaused.value = false;
-	timeLeft.value = durations[mode.value];
-}
-
+// Colors for visual feedback
 const currentColor = computed(() => {
 	switch (mode.value) {
 		case 'work':
@@ -85,12 +49,71 @@ const currentColor = computed(() => {
 			return '#ccc';
 	}
 });
-
 const glowButtonStyle = computed(() => ({
 	borderColor: currentColor.value,
 	color: currentColor.value,
 	boxShadow: `0 0 10px ${currentColor.value}`
 }));
+
+function setMode(newMode) {
+	stopTimer();
+	mode.value = newMode;
+	timeLeft.value = durations[newMode];
+	isRunning.value = false;
+	wasPaused.value = false;
+}
+
+function toggleTimer() {
+	if (isRunning.value) {
+		stopTimer();
+		wasPaused.value = true;
+		isRunning.value = false;
+	} else {
+		startTimer();
+		wasPaused.value = false;
+		isRunning.value = true;
+	}
+}
+
+function startTimer() {
+	intervalId.value = setInterval(() => {
+		if (timeLeft.value > 0) {
+			timeLeft.value--;
+		} else {
+			handleCycle();
+		}
+	}, 1000);
+}
+
+function stopTimer() {
+	clearInterval(intervalId.value);
+}
+
+function resetTimer() {
+	stopTimer();
+	timeLeft.value = durations[mode.value];
+	isRunning.value = false;
+	wasPaused.value = false;
+}
+
+function handleCycle() {
+	stopTimer();
+	isRunning.value = false;
+
+	if (mode.value === 'work') {
+		pomodoroCount.value++;
+		if (pomodoroCount.value % 4 === 0) {
+			setMode('long');
+		} else {
+			setMode('short');
+		}
+	} else {
+		setMode('work');
+	}
+
+	startTimer();
+	isRunning.value = true;
+}
 </script>
 
 <template>
@@ -122,11 +145,13 @@ const glowButtonStyle = computed(() => ({
 				Reset
 			</button>
 		</div>
+
 		<p class="mode">{{ modeLabel }}</p>
+		<p class="pomodoroCounter">Pomodoros completed: {{ pomodoroCount }}</p>
 	</div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 .timerBox {
 	display: flex;
 	align-items: center;
@@ -136,6 +161,12 @@ const glowButtonStyle = computed(() => ({
 
 	.timer {
 		font-size: 4em;
+	}
+
+	.pomodoroCounter {
+		font-size: 1rem;
+		margin-top: 1rem;
+		color: #555;
 	}
 }
 
@@ -160,6 +191,7 @@ const glowButtonStyle = computed(() => ({
 		font-size: 1em;
 		max-width: 100%;
 	}
+
 	button:hover {
 		cursor: pointer;
 	}
@@ -168,19 +200,15 @@ const glowButtonStyle = computed(() => ({
 .btn {
 	border: 2px solid var(--btn-color);
 }
-
 .btn:hover {
 	box-shadow: 0 0 6px var(--btn-color);
 }
-
 .btnWork {
 	--btn-color: #e63946;
 }
-
 .btnShort {
 	--btn-color: #2a9d8f;
 }
-
 .btnLong {
 	--btn-color: #457b9d;
 }
@@ -198,6 +226,7 @@ const glowButtonStyle = computed(() => ({
 		.timer {
 			font-size: 5em;
 		}
+
 		.mode {
 			font-size: 2em;
 		}
@@ -205,26 +234,7 @@ const glowButtonStyle = computed(() => ({
 
 	.btnContainer {
 		flex-wrap: nowrap;
-		button {
-			padding: 5px;
-		}
-	}
-}
 
-@media (min-width: 390px) and (max-width: 768px) {
-	.timerBox {
-		font-size: 0.9em;
-
-		.timer {
-			font-size: 6em;
-		}
-		.mode {
-			font-size: 2rem;
-		}
-	}
-
-	.btnContainer {
-		flex-wrap: nowrap;
 		button {
 			padding: 5px;
 		}
